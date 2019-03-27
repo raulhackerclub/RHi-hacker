@@ -1,0 +1,13 @@
+Peças:
+    1) Frente - 4 resistores de [?] Ohms (4 peças).
+    2) Direita - 4 resistores de [?] Ohms (4 peças).
+    3) Esquerda - 4 resistores de [?] Ohms (4 peças).
+    4) Função - 4 resistores de [?] Ohms (4 peças).
+
+LEDs:
+    - 16 resistores de [?] Ohms.
+
+Fixos da trilha de 5V:
+    - 16 resistores de [?] Ohms.
+
+Total: 48 resistores.
