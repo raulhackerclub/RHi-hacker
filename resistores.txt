@@ -8,6 +8,6 @@ LEDs:
     - 16 resistores de [?] Ohms.
 
 Fixos da trilha de 5V:
-    - 16 resistores de [?] Ohms.
+    - 16 resistores de 10K Ohms.
 
 Total: 48 resistores.
