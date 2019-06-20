@@ -1,8 +1,8 @@
 Peças:
-    1) Frente - 4 resistores de [?] Ohms (4 peças).
-    2) Direita - 4 resistores de [?] Ohms (4 peças).
-    3) Esquerda - 4 resistores de [?] Ohms (4 peças).
-    4) Função - 4 resistores de [?] Ohms (4 peças).
+    1) Frente - 4 resistores de [100] Ohms (4 peças).
+    2) Direita - 4 resistores de [1K] Ohms (4 peças).
+    3) Esquerda - 4 resistores de [4,7K] Ohms (4 peças).
+    4) Função - 4 resistores de [10K] Ohms (4 peças).
 
 LEDs:
     - 16 resistores de [?] Ohms.
