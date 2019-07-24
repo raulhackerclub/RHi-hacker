@@ -28,14 +28,14 @@ const int CMD_DOWN_V[2] = {CMD_DOWN - DEFAULT_WIGGLE, CMD_DOWN + DEFAULT_WIGGLE}
 const int CMD_LEFT_V[2] = {CMD_LEFT - DEFAULT_WIGGLE, CMD_LEFT + DEFAULT_WIGGLE};
 
 
-const int activeSlotCount = 4;
+const int activeSlotCount = 8;
 const int MAX_SENSOR_VAL = 1023;
-const int sensorPins[activeSlotCount] = {A0, A1, A2, A3};
-const int ledPins[activeSlotCount] = {8, 9, 10, 11};
+const int sensorPins[activeSlotCount] = {A0, A1, A2, A3, A4, A5, A6, A7};
+const int ledPins[activeSlotCount] = {4, 5, 6, 7, 8, 9, 10, 11};
 
 
-int sensorsValue[activeSlotCount] = {MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL};
-bool ledsState[activeSlotCount] = {false, false, false, false};
+int sensorsValue[activeSlotCount] = {MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL};
+bool ledsState[activeSlotCount] = {};
 
 void setup() {
   // configura os pinos analógicos como entrada
