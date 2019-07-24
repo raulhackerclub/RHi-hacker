@@ -79,6 +79,8 @@ void loop() {
 
 /**
  * Identifica os comandos que estão na mesa e preenche array com a lista de comandos identificados
+ * @param  {int[]} int *cmds Lista initializada onde os comandos serão escritos
+ * @return {int[]} a lista de comandos identificados
  */
 void identifyCommands(int *cmds) {
   for (int i=0; i < activeSlotCount; i++) {
@@ -95,4 +97,39 @@ void identifyCommands(int *cmds) {
       cmds[i] = CMD_LEFT;
     }
   }
+}
+
+/**
+ * Constrói uma string que contem a lista de comandos a ser enviada para o robô
+ * @param  {[type]} int cmds[] a lista de comandos identificados
+ * @return {String} a String a ser enviada
+ */
+String buildCommandString(int cmds[]) {
+  String cmdString = "";
+
+  for (int i=0; i < activeSlotCount; i++) {
+    // a string conterá apenas os comandos identificados
+    if (cmds[i] == 0)
+      break;
+
+    switch (cmds[i]) {
+      case CMD_UP:
+        cmdString.concat(":UP");
+        break;
+      case CMD_RIGHT:
+        cmdString.concat(":RIGHT");
+        break;
+      case CMD_DOWN:
+        cmdString.concat(":DOWN");
+        break;
+      case CMD_LEFT:
+        cmdString.concat(":LEFT");
+        break;
+    }
+  }
+
+  if (cmdString[0] == ':')
+    cmdString.remove(0);
+
+  return cmdString;
 }
