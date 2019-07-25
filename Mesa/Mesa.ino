@@ -32,20 +32,26 @@ enum ExecutionState {
   FOLLOWING_EXECUTION,
 };
 
+const int activeSlotCount = 8;
+const int MAX_SENSOR_VAL = 1023;
+const int sensorPins[activeSlotCount] = {A0, A1, A2, A3, A4, A5, A6, A7};
+const int ledPins[activeSlotCount] = {4, 5, 6, 7, 8, 9, 10, 11};
+const int goBtnPin = 3;
+
 /**
  * Estado de execução atual
  * @type {ExecutionStates}
  */
 ExecutionState currentState = IDLE;
 
-const int activeSlotCount = 8;
-const int MAX_SENSOR_VAL = 1023;
-const int sensorPins[activeSlotCount] = {A0, A1, A2, A3, A4, A5, A6, A7};
-const int ledPins[activeSlotCount] = {4, 5, 6, 7, 8, 9, 10, 11};
-const int goPin = 3;
+/**
+ * string de commandos atual
+ * @type {String}
+ */
+String currentCmdString = "";
 
-int sensorsValue[activeSlotCount] = {MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL};
 bool ledsState[activeSlotCount] = {};
+int goBtnState = LOW;
 
 void setup() {
   // configura os pinos analógicos como entrada
@@ -78,32 +84,63 @@ void loop() {
   }
 }
 
+/**
+ * Acende e apaga os leds dos slot que tiverem peças encaixadas
+ * transiciona para o estado BUILDING_COMMANDS
+ * @return {void}
+ */
 void doIdle() {
-  // identifica os estados que cada led deve ter baseado na presença de um (qualquer) resistor
-  for (int i = 0; i < activeSlotCount; i++) {
-    int sensorValue = analogRead(sensorPins[i]);
+  goBtnState = digitalRead(goBtnPin);
 
-    // MAX_SENSOR_VAL - 10 para acomodar flutuações
-    if (sensorValue < MAX_SENSOR_VAL - 10)
-      ledsState[i] = true;
-    else
+  // === condição de transição para o próximo estado
+  if (goBtnState == HIGH) {
+    // zera o estado dos leds
+    for (int i = 0; i < activeSlotCount; i++) {
       ledsState[i] = false;
-  }
-
-  // acende ou apaga os leds baseado no array de estados dos leds
-  for (int i = 0; i < activeSlotCount; i++) {
-    if (ledsState[i])
-      digitalWrite(ledPins[i], HIGH);
-    else
       digitalWrite(ledPins[i], LOW);
-  }
+    }
+    // zera o estado do botão de início
+    goBtnState = LOW;
 
-  // não precisa ser muito rápido
-  delay(150);
+    currentState = BUILDING_COMMANDS;
+
+  } else {
+    // identifica os estados que cada led deve ter baseado na presença de um (qualquer) resistor
+    for (int i = 0; i < activeSlotCount; i++) {
+      int sensorValue = analogRead(sensorPins[i]);
+
+      // MAX_SENSOR_VAL - 10 para acomodar flutuações
+      if (sensorValue < MAX_SENSOR_VAL - 10)
+        ledsState[i] = true;
+      else
+        ledsState[i] = false;
+    }
+
+    // acende ou apaga os leds baseado no array de estados dos leds
+    for (int i = 0; i < activeSlotCount; i++) {
+      if (ledsState[i])
+        digitalWrite(ledPins[i], HIGH);
+      else
+        digitalWrite(ledPins[i], LOW);
+    }
+
+    // não precisa ser muito rápido
+    delay(150);
+  }
 }
 
 void doBuildCommands() {
+  currentCmdString = "";
+
+  int cmdList[activeSlotCount] = {};
+  identifyCommands(cmdList);
+
+  currentCmdString = buildCommandString(cmdList);
+
+  // === transição para o próximo estado
+  currentState = SENDING_COMMANDS;
 }
+
 void doSendCommands() {
 }
 void doAwaitConfirmation() {
