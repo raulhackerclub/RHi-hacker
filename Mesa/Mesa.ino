@@ -1,3 +1,5 @@
+#include "IO.h"
+
 //
 // Valores de resistência padrão para os comandos, usando resistores de
 // 220, 1k, 10k e 100k respectivamente
@@ -45,14 +47,23 @@ const int goBtnLedPin = 2;
  */
 ExecutionState currentState = IDLE;
 
+bool ledsState[activeSlotCount] = {};
+int goBtnState = LOW;
+
+// ===  variáveis BUILDING_COMMANDS
+
 /**
  * string de commandos atual
  * @type {String}
  */
 String currentCmdString = "";
 
-bool ledsState[activeSlotCount] = {};
-int goBtnState = LOW;
+
+// ===  variáveis SENDING_COMMANDS
+
+IO io();
+bool isSendingCommand = false;
+bool cmdTransmissionResult = false;
 
 void setup() {
   // configura os pinos analógicos como entrada
@@ -142,8 +153,25 @@ void doBuildCommands() {
   currentState = SENDING_COMMANDS;
 }
 
+/* Envia string com commandos para serem executados pelo robô
+ * @return {void}
+ */
 void doSendCommands() {
+  if (!isSendingCommand) {
+    cmdTransmissionResult = io.send(currentCmdString);
+    isSendingCommand = true;
+  }
+
+  // === condição de transição para o próximo estado
+  if (cmdTransmissionResult) {
+    // zerando variáveis
+    isSendingCommand = false;
+    cmdTransmissionResult = false;
+    currentCmdString = "";
+    currentState = AWAITING_CONFIRMATION;
+  }
 }
+
 void doAwaitConfirmation() {
 }
 void doFollowExecution() {
@@ -208,12 +236,4 @@ String buildCommandString(int cmds[]) {
     cmdString.remove(0);
 
   return cmdString;
-}
-
-/* Envia string com commandos para serem executados pelo robô
- * @param  {[type]} String cmdString string de commando
- * @return {void}
- */
-void sendCommandString(String cmdString) {
-  // TODO
 }
