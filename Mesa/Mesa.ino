@@ -36,6 +36,8 @@ enum ExecutionState {
 
 const int activeSlotCount = 8;
 const int MAX_SENSOR_VAL = 1023;
+
+// pinos
 const int slotsSensorPins[activeSlotCount] = {A0, A1, A2, A3, A4, A5, A6, A7};
 const int slotsLedPins[activeSlotCount] = {4, 5, 6, 7, 8, 9, 10, 11};
 const int goBtnPin = 3;
@@ -158,7 +160,7 @@ void doBuildCommands() {
  */
 void doSendCommands() {
   if (!isSendingCommand) {
-    cmdTransmissionResult = io.send(currentCmdString);
+    // cmdTransmissionResult = io.send(currentCmdString);
     isSendingCommand = true;
   }
 
