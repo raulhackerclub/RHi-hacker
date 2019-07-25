@@ -34,9 +34,10 @@ enum ExecutionState {
 
 const int activeSlotCount = 8;
 const int MAX_SENSOR_VAL = 1023;
-const int sensorPins[activeSlotCount] = {A0, A1, A2, A3, A4, A5, A6, A7};
-const int ledPins[activeSlotCount] = {4, 5, 6, 7, 8, 9, 10, 11};
+const int slotsSensorPins[activeSlotCount] = {A0, A1, A2, A3, A4, A5, A6, A7};
+const int slotsLedPins[activeSlotCount] = {4, 5, 6, 7, 8, 9, 10, 11};
 const int goBtnPin = 3;
+const int goBtnLedPin = 2;
 
 /**
  * Estado de execução atual
@@ -56,12 +57,12 @@ int goBtnState = LOW;
 void setup() {
   // configura os pinos analógicos como entrada
   for (int i = 0; i < activeSlotCount; i++) {
-    pinMode(sensorPins[i], INPUT_PULLUP);
+    pinMode(slotsSensorPins[i], INPUT_PULLUP);
   }
 
   // configura os pinos dos leds saída
   for (int i = 0; i < activeSlotCount; i++) {
-    pinMode(ledPins[i], OUTPUT);
+    pinMode(slotsLedPins[i], OUTPUT);
   }
 }
 
@@ -97,7 +98,7 @@ void doIdle() {
     // zera o estado dos leds
     for (int i = 0; i < activeSlotCount; i++) {
       ledsState[i] = false;
-      digitalWrite(ledPins[i], LOW);
+      digitalWrite(slotsLedPins[i], LOW);
     }
     // zera o estado do botão de início
     goBtnState = LOW;
@@ -107,7 +108,7 @@ void doIdle() {
   } else {
     // identifica os estados que cada led deve ter baseado na presença de um (qualquer) resistor
     for (int i = 0; i < activeSlotCount; i++) {
-      int sensorValue = analogRead(sensorPins[i]);
+      int sensorValue = analogRead(slotsSensorPins[i]);
 
       // MAX_SENSOR_VAL - 10 para acomodar flutuações
       if (sensorValue < MAX_SENSOR_VAL - 10)
@@ -119,9 +120,9 @@ void doIdle() {
     // acende ou apaga os leds baseado no array de estados dos leds
     for (int i = 0; i < activeSlotCount; i++) {
       if (ledsState[i])
-        digitalWrite(ledPins[i], HIGH);
+        digitalWrite(slotsLedPins[i], HIGH);
       else
-        digitalWrite(ledPins[i], LOW);
+        digitalWrite(slotsLedPins[i], LOW);
     }
 
     // não precisa ser muito rápido
@@ -159,7 +160,7 @@ void doFollowExecution() {
  */
 void identifyCommands(int *cmds) {
   for (int i=0; i < activeSlotCount; i++) {
-    int pin = sensorPins[i];
+    int pin = slotsSensorPins[i];
     int value = analogRead(pin);
 
     if (value >= CMD_UP_V[0] && value <= CMD_UP_V[1]) {
