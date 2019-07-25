@@ -1,9 +1,3 @@
-// Leitura dos resistores:
-// 220 - 62
-// 1k - 131
-// 10k 587
-// 100k - 949
-
 //
 // Valores de resistência padrão para os comandos, usando resistores de
 // 220, 1k, 10k e 100k respectivamente
@@ -27,12 +21,28 @@ const int CMD_RIGHT_V[2] = {CMD_RIGHT - DEFAULT_WIGGLE, CMD_RIGHT + DEFAULT_WIGG
 const int CMD_DOWN_V[2] = {CMD_DOWN - DEFAULT_WIGGLE, CMD_DOWN + DEFAULT_WIGGLE};
 const int CMD_LEFT_V[2] = {CMD_LEFT - DEFAULT_WIGGLE, CMD_LEFT + DEFAULT_WIGGLE};
 
+/**
+ * Possíveis estados de execução
+ */
+enum ExecutionState {
+  IDLE,
+  BUILDING_COMMANDS,
+  SENDING_COMMANDS,
+  AWAITING_CONFIRMATION,
+  FOLLOWING_EXECUTION,
+};
+
+/**
+ * Estado de execução atual
+ * @type {ExecutionStates}
+ */
+ExecutionState currentState = IDLE;
 
 const int activeSlotCount = 8;
 const int MAX_SENSOR_VAL = 1023;
 const int sensorPins[activeSlotCount] = {A0, A1, A2, A3, A4, A5, A6, A7};
 const int ledPins[activeSlotCount] = {4, 5, 6, 7, 8, 9, 10, 11};
-
+const int goPin = 3;
 
 int sensorsValue[activeSlotCount] = {MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL, MAX_SENSOR_VAL};
 bool ledsState[activeSlotCount] = {};
@@ -50,6 +60,25 @@ void setup() {
 }
 
 void loop() {
+  switch (currentState) {
+    case BUILDING_COMMANDS:
+      doBuildCommands();
+      break;
+    case SENDING_COMMANDS:
+      doSendCommands();
+      break;
+    case AWAITING_CONFIRMATION:
+      doAwaitConfirmation();
+      break;
+    case FOLLOWING_EXECUTION:
+      doFollowExecution();
+      break;
+    default:
+      doIdle();
+  }
+}
+
+void doIdle() {
   // identifica os estados que cada led deve ter baseado na presença de um (qualquer) resistor
   for (int i = 0; i < activeSlotCount; i++) {
     int sensorValue = analogRead(sensorPins[i]);
@@ -71,6 +100,15 @@ void loop() {
 
   // não precisa ser muito rápido
   delay(150);
+}
+
+void doBuildCommands() {
+}
+void doSendCommands() {
+}
+void doAwaitConfirmation() {
+}
+void doFollowExecution() {
 }
 
 //
@@ -132,4 +170,12 @@ String buildCommandString(int cmds[]) {
     cmdString.remove(0);
 
   return cmdString;
+}
+
+/* Envia string com commandos para serem executados pelo robô
+ * @param  {[type]} String cmdString string de commando
+ * @return {void}
+ */
+void sendCommandString(String cmdString) {
+  // TODO
 }
