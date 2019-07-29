@@ -15,6 +15,9 @@ const byte address[6] = "00001";
 // const int misoPin = 50;
 
 IO::IO() {
+}
+
+int IO::init() {
   Serial.println("Inicializando radio");
 
   radio.begin();
@@ -23,6 +26,8 @@ IO::IO() {
   radio.stopListening();
 
   Serial.println("Radio inicializado");
+
+  return 0;
 }
 
 bool IO::send(String cmdString) {

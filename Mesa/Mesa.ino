@@ -73,13 +73,13 @@ bool cmdTransmissionResult = false;
 bool isAwaitingConfirmation = false;
 bool confirmationResult = false;
 
-IO io;
+IO io = IO();
 
 void setup() {
   Serial.begin(9600);
   Serial.println("setup");
 
-  io = io;
+  io.init();
 
   // configura os pinos analógicos como entrada
   for (int i = 0; i < activeSlotCount; i++) {
@@ -114,7 +114,7 @@ void loop() {
       break;
   }
 
-  delay(50);
+  delay(500);
 }
 
 /**
@@ -186,7 +186,7 @@ void doSendCommands() {
   Serial.println("sending command...");
 
   if (!isSendingCommand) {
-    cmdTransmissionResult = io.send(currentCmdString);
+    // cmdTransmissionResult = io.send(currentCmdString);
     isSendingCommand = true;
   }
 
@@ -206,7 +206,7 @@ void doAwaitConfirmation() {
   String confirmationText;
 
   if (!isAwaitingConfirmation) {
-    io.receive();
+    // io.receive();
     isAwaitingConfirmation = true;
   }
 

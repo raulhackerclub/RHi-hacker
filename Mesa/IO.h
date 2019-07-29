@@ -1,5 +1,4 @@
 #ifndef IO_h
-
 #define IO_h
 
 #include "Arduino.h"
@@ -7,6 +6,7 @@
 class IO {
   public:
     IO();
+    int init();
     bool send(String cmdString);
     String receive();
   private:
