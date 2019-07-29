@@ -1,3 +1,4 @@
+#include <SPI.h>
 #include "IO.h"
 
 //
@@ -63,11 +64,23 @@ String currentCmdString = "";
 
 // ===  variáveis SENDING_COMMANDS
 
-IO io();
 bool isSendingCommand = false;
 bool cmdTransmissionResult = false;
 
+
+// ===  variáveis AWAITING_CONFIRMATION
+
+bool isAwaitingConfirmation = false;
+bool confirmationResult = false;
+
+IO io;
+
 void setup() {
+  Serial.begin(9600);
+  Serial.println("setup");
+
+  io = io;
+
   // configura os pinos analógicos como entrada
   for (int i = 0; i < activeSlotCount; i++) {
     pinMode(slotsSensorPins[i], INPUT_PULLUP);
@@ -77,6 +90,9 @@ void setup() {
   for (int i = 0; i < activeSlotCount; i++) {
     pinMode(slotsLedPins[i], OUTPUT);
   }
+
+  pinMode(goBtnPin, INPUT_PULLUP);
+  pinMode(goBtnLedPin, OUTPUT);
 }
 
 void loop() {
@@ -95,7 +111,10 @@ void loop() {
       break;
     default:
       doIdle();
+      break;
   }
+
+  delay(50);
 }
 
 /**
@@ -104,10 +123,13 @@ void loop() {
  * @return {void}
  */
 void doIdle() {
+  Serial.println("Idling...");
+
+
   goBtnState = digitalRead(goBtnPin);
 
   // === condição de transição para o próximo estado
-  if (goBtnState == HIGH) {
+  if (goBtnState == LOW) {
     // zera o estado dos leds
     for (int i = 0; i < activeSlotCount; i++) {
       ledsState[i] = false;
@@ -144,6 +166,8 @@ void doIdle() {
 }
 
 void doBuildCommands() {
+  Serial.println("Building command...");
+
   currentCmdString = "";
 
   int cmdList[activeSlotCount] = {};
@@ -159,8 +183,10 @@ void doBuildCommands() {
  * @return {void}
  */
 void doSendCommands() {
+  Serial.println("sending command...");
+
   if (!isSendingCommand) {
-    // cmdTransmissionResult = io.send(currentCmdString);
+    cmdTransmissionResult = io.send(currentCmdString);
     isSendingCommand = true;
   }
 
@@ -175,8 +201,28 @@ void doSendCommands() {
 }
 
 void doAwaitConfirmation() {
+  Serial.println("await confirmation...");
+
+  String confirmationText;
+
+  if (!isAwaitingConfirmation) {
+    io.receive();
+    isAwaitingConfirmation = true;
+  }
+
+  confirmationResult = confirmationText.equals("OK");
+
+  // === condição de transição para o próximo estado
+  if (confirmationResult) {
+    // zerando variáveis
+    isAwaitingConfirmation = false;
+    confirmationResult = false;
+    currentState = FOLLOWING_EXECUTION;
+  }
 }
+
 void doFollowExecution() {
+
 }
 
 //

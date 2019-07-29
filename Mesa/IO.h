@@ -1,3 +1,7 @@
+#ifndef IO_h
+
+#define IO_h
+
 #include "Arduino.h"
 
 class IO {
@@ -6,11 +10,12 @@ class IO {
     bool send(String cmdString);
     String receive();
   private:
-//    RF24 radio;
-    byte address;
-    int csnPin;
-    int cePin;
-    // int sckPin;
-    // int mosiPin;
-    // int misoPin;
+    // byte _address;
+    // int _csnPin;
+    // int _cePin;
+    // int _sckPin;
+    // int _mosiPin;
+    // int _misoPin;
 };
+
+#endif

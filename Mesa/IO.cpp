@@ -1,18 +1,18 @@
+#include <RF24_config.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+#include <SPI.h>
+
 #include "Arduino.h"
 #include "IO.h"
-//#include <SPI.h>
-//#include <nRF24L01.h>
-#include <RF24.h>
 
+
+RF24 radio(7, 8); // CE, CSN
 const byte address[6] = "00001";
-const int csnPin = 20;
-const int cePin = 21;
 
-RF24 radio(cePin, csnPin);
-
-// const int sckPin; = 52;
-// const int mosiPin; = 51;
-// const int misoPin; = 50;
+// const int sckPin = 52;
+// const int mosiPin = 51;
+// const int misoPin = 50;
 
 IO::IO() {
   Serial.println("Inicializando radio");
@@ -36,6 +36,8 @@ bool IO::send(String cmdString) {
 
   Serial.print("Texto ENVIADO ");
   Serial.println(text);
+
+  return true;
 }
 
 
@@ -53,4 +55,6 @@ String IO::receive() {
   } else {
     Serial.println("Radio não disponível");
   }
+
+  return "OK";
 }
