@@ -1,4 +1,3 @@
-#include <SPI.h>
 #include "IO.h"
 
 //
@@ -114,7 +113,7 @@ void loop() {
       break;
   }
 
-  delay(500);
+  delay(100);
 }
 
 /**
@@ -124,7 +123,6 @@ void loop() {
  */
 void doIdle() {
   Serial.println("Idling...");
-
 
   goBtnState = digitalRead(goBtnPin);
 
@@ -186,8 +184,9 @@ void doSendCommands() {
   Serial.println("sending command...");
 
   if (!isSendingCommand) {
+    io.send(currentCmdString);
     // cmdTransmissionResult = io.send(currentCmdString);
-    isSendingCommand = true;
+    // isSendingCommand = true;
   }
 
   // === condição de transição para o próximo estado

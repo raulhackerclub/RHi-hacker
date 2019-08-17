@@ -33,10 +33,9 @@ int IO::init() {
 bool IO::send(String cmdString) {
   Serial.println("Enviando texto");
 
-  char text[sizeof(cmdString)];
-  cmdString.toCharArray(text, sizeof(cmdString));
+  char text[cmdString.length() + 1];
+  cmdString.toCharArray(text, cmdString.length() + 1);
 
-  radio.stopListening();
   radio.write(&text, sizeof(text));
 
   Serial.print("Texto ENVIADO ");
